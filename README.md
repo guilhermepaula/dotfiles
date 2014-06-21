@@ -1,4 +1,4 @@
-# dotfiles with 
+# just another dotfiles repo...
 
 A set of [dotfiles](http://dotfiles.github.io/) that you're welcome to [fork it](https://github.com/guilhermepaula/dotfiles/fork)! 
 
