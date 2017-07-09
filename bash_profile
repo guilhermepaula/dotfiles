@@ -8,6 +8,9 @@ alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias localip="ipconfig getifaddr en0"
 alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
 
+#Utilities
+alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python"
+
 # Shortcuts
 alias ll="ls -lG"
 alias la="ls -A"
@@ -23,7 +26,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     #TODO
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     #Open Chrome
-    alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
+    alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 
     #Empty the Trash on all mounted volumes and the main HDD.
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
