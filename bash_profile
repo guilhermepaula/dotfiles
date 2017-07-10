@@ -4,8 +4,9 @@
 #############################################
 
 #IP
-alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias localip="ipconfig getifaddr en0"
+alias ip="curl -s whatismyip.akamai.com | cut -d ' ' -f 5"
+alias net_if="netstat -rn | awk '/^0.0.0.0/ {thif=substr($0,74,10); print thif;} /^default.*UG/ {thif=substr($0,65,10); print thif;}'"
+alias localip="ifconfig ${net_if} | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
 alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
 
 #Utilities
@@ -23,8 +24,10 @@ alias ~="cd ~"
 alias -- -="cd -"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    #TODO
+    alias emptytrash="rm -rfv ~/.local/share/Trash/*"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
+    alias free="$(( $(vm_stat | awk '/free/ {gsub(/\./, "", $3); print $3}') * 4096 / 1048576)) MiB free"
+
     #Open Chrome
     alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 
@@ -53,7 +56,6 @@ export LSCOLORS=Gxfxcxdxbxegedabagacad
 ###
 
 function clean() {
-    echo "Cleaning"
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         sudo apt-get autoremove
         sudo apt-get autoclean
@@ -65,14 +67,26 @@ function clean() {
 }
 
 function update() {
-    echo "Updating"
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         sudo apt-get update
-        sudo apt-get upgrade
+        sudo apt-get upgrade -y
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         sudo softwareupdate -i -a
         brew update
         brew upgrade
+    fi
+}
+
+function setjava() {
+    if [[ $# -eq 0 ]] ; then
+        echo "use $0 <version>"
+        return
+    fi
+    FILE=$(ls -d ~/.sdkman/candidates/java/$1* | tail -1 | cut -d "/" -f7)
+    if [[ -d ~/.sdkman/candidates/java/$FILE ]]; then
+        sdk default java $FILE
+    else
+        echo "Java version not found"
     fi
 }
 
@@ -98,6 +112,61 @@ function checkport() {
             ps -p "$pid" -o pid,command
         fi
     fi
+}
+
+function checksys() {
+    echo "> Internet: $(ping -c 1 google.com &> /dev/null && echo -e "Connected" || echo -e "Disconnected")"
+    echo "> IP: $(ip)"
+    echo "> Local IP: $(localip)"
+    echo "> OS: $(uname -srm)"
+    echo "> Uptime: $(uptime | awk '{print $3,$4,$5}' | sed 's/.$//')"
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        echo "> RAM Usage: $(free -m | awk 'NR==2{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2}')"
+        echo "> SWAP Usage: $(free -m | awk 'NR==3{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2}')"
+        echo "> CPU Load: $(top -bn1 | grep load | awk '{printf "%.2f\n", $(NF-2)}')"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        pfree=$(vm_stat | sed -n 2p | awk '{print $3}' | sed 's/.$//')
+        pwired=$(vm_stat | sed -n 7p | awk '{print $4}' | sed 's/.$//')
+        pinact=$(vm_stat | sed -n 4p | awk '{print $3}' | sed 's/.$//')
+        panon=$(vm_stat | sed -n 15p | awk '{print $3}' | sed 's/.$//')
+        pcomp=$(vm_stat | sed -n 17p | awk '{print $5}' | sed 's/.$//')
+        ppurge=$(vm_stat | sed -n 8p | awk '{print $3}' | sed 's/.$//')
+        pfback=$(vm_stat | sed -n 14p | awk '{print $3}' | sed 's/.$//')
+
+        to_byte=4096
+        byte_to_megabyte=1048576
+
+        pfree=$(( pfree * to_byte / byte_to_megabyte ))
+        pwired=$(( pwired * to_byte / byte_to_megabyte ))
+        pinact=$(( pinact * to_byte / byte_to_megabyte ))
+        panon=$(( panon * to_byte / byte_to_megabyte ))
+        pcomp=$(( pcomp * to_byte / byte_to_megabyte ))
+        ppurge=$(( ppurge * to_byte / byte_to_megabyte ))
+        pfback=$(( pfback * to_byte / byte_to_megabyte ))
+
+        free=$(( pfree + pinact ))
+        cached=$(( pfback + ppurge ))
+        appmem=$(( panon - ppurge ))
+        used=$(( appmem + pwired + pcomp ))
+
+        total_mem=$(( $(sysctl -n hw.memsize) / byte_to_megabyte ))
+        total_percent=$(( used * 100 / total_mem ))
+
+        printf "> RAM Usage: %.0f/%.0fMB (%.0f%s)\n" $used $total_mem $total_percent "%"
+        echo "> SWAP Usage: $(sysctl -n -o vm.swapusage | awk '{ if( $3+0 != 0 )  printf( "%.0f/%.0fMB (%.0f%s)\n", ($6+0), ($3+0), ($6+0)*100/($3+0), "%" ); }')"
+        echo "> CPU Load: $(sysctl -n -o vm.loadavg | awk '{printf($2, $3, $4);}')"
+    fi
+    echo "> Disk Usage:\\n$(df -Hl | sed -e /Filesystem/d | awk '{print $1 " " $3 "/" $2 " (" $5 ")"}')"
+}
+
+function encode64(){
+    echo -n "$1" | base64
+    echo ""
+}
+
+function decode64(){
+    echo -n "$1" | base64 --decode
+    echo ""
 }
 
 export PATH="/usr/local/sbin:$PATH"
