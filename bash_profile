@@ -3,6 +3,8 @@
 # http://github.com/guilhermepaula/dotfiles #
 #############################################
 
+alias reload="exec $SHELL -l"
+
 #IP
 alias ip="curl -s whatismyip.akamai.com | cut -d ' ' -f 5"
 alias net_if="netstat -rn | awk '/^0.0.0.0/ {thif=substr($0,74,10); print thif;} /^default.*UG/ {thif=substr($0,65,10); print thif;}'"
@@ -12,7 +14,10 @@ alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[
 #Utilities
 alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python"
 
-# Shortcuts
+#npm: list globally-installed packages
+alias nlg="npm list -g --depth=0"
+
+# Navigation
 alias ll="ls -lG"
 alias la="ls -A"
 alias l="ls -CF"
@@ -21,7 +26,37 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ~="cd ~"
-alias -- -="cd -"
+
+# git aliases
+alias ga="git add"
+alias gai="git add -interactive"
+alias gA="git add --all"
+alias gbl="git branch --list --verbose"
+alias gcl="git clone --progress"
+alias gcb="git checkout -B"
+alias gco="git checkout"
+alias gcm="git checkout master"
+alias gpr="git pull --verbose"
+alias gca="git commit --amend"
+alias gct="git commit"
+alias gd="git diff"
+alias gundocommit="git reset --soft 'HEAD^'"
+alias gundopush="git push -f origin 'HEAD^:master'"
+alias glo="git log --decorate --oneline --graph"
+alias glg="git log --decorate --graph --abbrev-commit --date=relative"
+alias gmg="git merge --no-ff"
+alias gph="git push"
+alias gpom="git push origin master"
+alias grao="git remote add origin"
+alias grau="git remote add upstream"
+alias grv="git remote -v"
+alias gs="git status --short --branch"
+alias gss="git stash save"
+alias gsa="git stash apply"
+alias gsl="git stash list"
+alias gsp="git stash pop"
+alias gsc="git stash clear"
+alias gsd="git stash drop"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     alias emptytrash="rm -rfv ~/.local/share/Trash/*"
@@ -30,6 +65,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 
     #Open Chrome
     alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+    #Open VScode
+    alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
 
     #Empty the Trash on all mounted volumes and the main HDD.
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
@@ -74,19 +111,6 @@ function update() {
         sudo softwareupdate -i -a
         brew update
         brew upgrade
-    fi
-}
-
-function setjava() {
-    if [[ $# -eq 0 ]] ; then
-        echo "use $0 <version>"
-        return
-    fi
-    FILE=$(ls -d ~/.sdkman/candidates/java/$1* | tail -1 | cut -d "/" -f7)
-    if [[ -d ~/.sdkman/candidates/java/$FILE ]]; then
-        sdk default java $FILE
-    else
-        echo "Java version not found"
     fi
 }
 
@@ -171,9 +195,14 @@ function decode64(){
 
 export PATH="/usr/local/sbin:$PATH"
 
+# sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
+#nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+#autojump
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
