@@ -6,10 +6,8 @@
 alias reload="exec $SHELL -l"
 
 #IP
-alias ip="curl -s whatismyip.akamai.com | cut -d ' ' -f 5"
-alias net_if="netstat -rn | awk '/^0.0.0.0/ {thif=substr($0,74,10); print thif;} /^default.*UG/ {thif=substr($0,65,10); print thif;}'"
-alias localip="ifconfig ${net_if} | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
-alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+alias myip="curl -s whatismyip.akamai.com | cut -d ' ' -f 5"
+alias localip="hostname -I | cut -d ' ' -f 1"
 
 #Utilities
 alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python"
@@ -138,9 +136,24 @@ function checkport() {
     fi
 }
 
+function killport() {
+    if [ -z "$1" ]; then
+        echo "usage: $0 PORT"
+        echo "ex: $0 80"
+    else
+        pidFound="$(lsof -t -i:$1 -sTCP:LISTEN)"
+        if [ $pidFound ]; then
+            echo "killing application running in port $1"
+            kill -9 $pidFound
+        else
+            echo "no application running in port $1"
+        fi
+    fi
+}
+
 function checksys() {
     echo "> Internet: $(ping -c 1 google.com &> /dev/null && echo -e "Connected" || echo -e "Disconnected")"
-    echo "> IP: $(ip)"
+    echo "> IP: $(myip)"
     echo "> Local IP: $(localip)"
     echo "> OS: $(uname -srm)"
     echo "> Uptime: $(uptime | awk '{print $3,$4,$5}' | sed 's/.$//')"
@@ -180,7 +193,7 @@ function checksys() {
         echo "> SWAP Usage: $(sysctl -n -o vm.swapusage | awk '{ if( $3+0 != 0 )  printf( "%.0f/%.0fMB (%.0f%s)\n", ($6+0), ($3+0), ($6+0)*100/($3+0), "%" ); }')"
         echo "> CPU Load: $(sysctl -n -o vm.loadavg | awk '{printf($2, $3, $4);}')"
     fi
-    echo "> Disk Usage:\\n$(df -Hl | sed -e /Filesystem/d | awk '{print $1 " " $3 "/" $2 " (" $5 ")"}')"
+    echo "> Disk Usage:\\n$(df -Hl / | sed -e /Filesystem/d | awk '{print $1 " " $3 "/" $2 " (" $5 ")"}')"
 }
 
 function encode64(){
