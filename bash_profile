@@ -155,13 +155,14 @@ function checksys() {
     echo "> Internet: $(ping -c 1 google.com &> /dev/null && echo -e "Connected" || echo -e "Disconnected")"
     echo "> IP: $(myip)"
     echo "> Local IP: $(localip)"
-    echo "> OS: $(uname -srm)"
     echo "> Uptime: $(uptime | awk '{print $3,$4,$5}' | sed 's/.$//')"
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        echo "> OS: $(lsb_release --description | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}') @ $(uname -mr)"
         echo "> RAM Usage: $(free -m | awk 'NR==2{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2}')"
         echo "> SWAP Usage: $(free -m | awk 'NR==3{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2}')"
         echo "> CPU Load: $(top -bn1 | grep load | awk '{printf "%.2f\n", $(NF-2)}')"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "> OS: $(sw_vers -productName) $(sw_vers -productVersion)"
         pfree=$(vm_stat | sed -n 2p | awk '{print $3}' | sed 's/.$//')
         pwired=$(vm_stat | sed -n 7p | awk '{print $4}' | sed 's/.$//')
         pinact=$(vm_stat | sed -n 4p | awk '{print $3}' | sed 's/.$//')
