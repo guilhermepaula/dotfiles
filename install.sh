@@ -4,8 +4,7 @@
 # this script calls all files needed to install.
 ############################
 
-echo 'calling gitignore.sh'
-sh ./install_gitignore.sh
+DIR=$( cd "$(dirname "$0")" ; pwd -P )
 
-echo 'calling makesymlinks.sh'
-sh ./makesymlinks.sh
+sh $DIR/install_gitignore.sh
+sh $DIR/makesymlinks.sh

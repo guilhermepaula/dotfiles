@@ -4,17 +4,18 @@
 # This script creates symlinks from the home directory to any desired dotfiles in ~/dotfiles
 ############################
 
-dir=~/dotfiles
-olddir=~/dotfiles_old
-files="bashrc bash_profile vimrc vim zshrc"
+DIR=$( cd "$(dirname "$0")" ; pwd -P )
+OLD_SUFFIX="_old"
+OLD_DIR="$DIR$OLD_SUFFIX"
+FILES="bashrc bash_profile vimrc vim zshrc"
 
-echo "Creating $olddir for backup of any existing dotfiles in ~"
-mkdir -p $olddir
-cd $dir
+echo "Creating $OLD_DIR for backup of any existing dotfiles in ~"
+mkdir -p $OLD_DIR
+cd $DIR
 
-for file in $files; do
-    mv ~/.$file ~/dotfiles_old/
-    echo "Creating symlink to $file in home directory."
-    ln -s $dir/$file ~/.$file
+for FILE in $FILES; do
+    mv ~/.$FILE ~/dotfiles_old/
+    echo "Creating symlink to $FILE in home directory."
+    ln -s $DIR/$FILE ~/.$FILE
 done
 echo "...done"
