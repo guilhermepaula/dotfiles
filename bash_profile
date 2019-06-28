@@ -13,7 +13,10 @@ alias localip="hostname -I | cut -d ' ' -f 1"
 alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python"
 
 #npm: list globally-installed packages
-alias nlg="npm list -g --depth=0"
+alias list-npm="npm list -g --depth=0"
+
+#apt: list manually installed packages
+alias list-apt="comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u)"
 
 # Navigation
 alias ll="ls -lG"
@@ -92,8 +95,8 @@ export LSCOLORS=Gxfxcxdxbxegedabagacad
 
 function clean() {
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        sudo apt-get autoremove
-        sudo apt-get autoclean
+        sudo apt autoremove --purge
+        sudo apt autoclean
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         brew cleanup --force -s
         rm -rfv /Library/Caches/Homebrew/*
@@ -103,8 +106,8 @@ function clean() {
 
 function update() {
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        sudo apt-get update
-        sudo apt-get upgrade -y
+        sudo apt update
+        sudo apt --with-new-pkgs upgrade -y
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         sudo softwareupdate -i -a
         brew update
