@@ -6,7 +6,7 @@
 alias reload="exec $SHELL -l"
 
 #IP
-alias myip="curl -s whatismyip.akamai.com | cut -d ' ' -f 5"
+alias myip="curl -s ifconfig.me | cut -d ' ' -f 5"
 alias localip="hostname -I | cut -d ' ' -f 1"
 
 #Utilities
