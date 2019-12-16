@@ -19,8 +19,8 @@ alias list-npm="npm list -g --depth=0"
 alias list-apt="comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u)"
 
 # Navigation
-alias ll="ls -lG"
-alias la="ls -A"
+alias ll="ls -l"
+alias la="ls -lA"
 alias l="ls -CF"
 alias ..="cd .."
 alias ...="cd ../.."
@@ -30,23 +30,23 @@ alias ~="cd ~"
 
 # git aliases
 alias ga="git add"
-alias gai="git add -interactive"
+alias gai="git add --interactive"
 alias gA="git add --all"
 alias gbl="git branch --list --verbose"
-alias gcl="git clone --progress"
+alias gcp="git clone --progress"
+alias gch="git checkout"
 alias gcb="git checkout -B"
-alias gco="git checkout"
 alias gcm="git checkout master"
-alias gpr="git pull --verbose"
+alias gp="git pull --verbose"
 alias gca="git commit --amend"
-alias gct="git commit"
+alias gc="git commit"
 alias gd="git diff"
 alias gundocommit="git reset --soft 'HEAD^'"
 alias gundopush="git push -f origin 'HEAD^:master'"
-alias glo="git log --decorate --oneline --graph"
+alias gl="git log --decorate --oneline --graph"
 alias glg="git log --decorate --graph --abbrev-commit --date=relative"
-alias gmg="git merge --no-ff"
-alias gph="git push"
+alias gm="git merge --no-ff"
+alias gp="git push"
 alias gpom="git push origin master"
 alias grao="git remote add origin"
 alias grau="git remote add upstream"
@@ -79,15 +79,6 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     #Delete DS_Store files
     alias finder_clean="find . -type f -name '*.DS_Store' -ls -delete"
 fi
-
-###
-# Themes
-###
-
-# CLI Colors
-export CLICOLOR=1
-# Set "ls" colors
-export LSCOLORS=Gxfxcxdxbxegedabagacad
 
 ###
 # Functions
