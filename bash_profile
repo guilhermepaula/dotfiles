@@ -18,47 +18,6 @@ alias list-npm="npm list -g --depth=0"
 #apt: list manually installed packages
 alias list-apt="comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u)"
 
-# Navigation
-alias ll="ls -l"
-alias la="ls -lA"
-alias l="ls -CF"
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ~="cd ~"
-
-# git aliases
-alias ga="git add"
-alias gai="git add --interactive"
-alias gA="git add --all"
-alias gbl="git branch --list --verbose"
-alias gcp="git clone --progress"
-alias gch="git checkout"
-alias gcb="git checkout -B"
-alias gcm="git checkout master"
-alias gp="git pull --verbose"
-alias gca="git commit --amend"
-alias gc="git commit"
-alias gd="git diff"
-alias gundocommit="git reset --soft 'HEAD^'"
-alias gundopush="git push -f origin 'HEAD^:master'"
-alias gl="git log --decorate --oneline --graph"
-alias glg="git log --decorate --graph --abbrev-commit --date=relative"
-alias gm="git merge --no-ff"
-alias gp="git push"
-alias gpom="git push origin master"
-alias grao="git remote add origin"
-alias grau="git remote add upstream"
-alias grv="git remote -v"
-alias gs="git status --short --branch"
-alias gss="git stash save"
-alias gsa="git stash apply"
-alias gsl="git stash list"
-alias gsp="git stash pop"
-alias gsc="git stash clear"
-alias gsd="git stash drop"
-
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     alias emptytrash="rm -rfv ~/.local/share/Trash/*"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -188,7 +147,7 @@ function checksys() {
         echo "> SWAP Usage: $(sysctl -n -o vm.swapusage | awk '{ if( $3+0 != 0 )  printf( "%.0f/%.0fMB (%.0f%s)\n", ($6+0), ($3+0), ($6+0)*100/($3+0), "%" ); }')"
         echo "> CPU Load: $(sysctl -n -o vm.loadavg | awk '{printf($2, $3, $4);}')"
     fi
-    echo "> Disk Usage:\\n$(df -Hl / | sed -e /Filesystem/d | awk '{print $1 " " $3 "/" $2 " (" $5 ")"}')"
+    echo "> Disk Usage: $(df -Hl / | sed -e /Filesystem/d | awk '{print $1 " " $3 "/" $2 " (" $5 ")"}')"
 }
 
 function encode64(){
