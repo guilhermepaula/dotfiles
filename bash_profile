@@ -62,15 +62,15 @@ alias gsd="git stash drop"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     alias emptytrash="rm -rfv ~/.local/share/Trash/*"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
+#Empty the Trash on all mounted volumes and the main HDD.
+    alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
+    
     alias free="$(( $(vm_stat | awk '/free/ {gsub(/\./, "", $3); print $3}') * 4096 / 1048576)) MiB free"
 
     #Open Chrome
     alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
     #Open VScode
     alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
-
-    #Empty the Trash on all mounted volumes and the main HDD.
-    alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
 
     #Show and Hide hidden files in Finder
     alias finder_show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
@@ -201,7 +201,7 @@ function decode64(){
     echo ""
 }
 
-export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/sbin:/$HOME/bin:/$HOME/.local/bin:$PATH"
 
 # sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
@@ -211,6 +211,3 @@ export SDKMAN_DIR="$HOME/.sdkman"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-#autojump
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
