@@ -51,17 +51,27 @@ function clean() {
         rm -rfv /Library/Caches/Homebrew/*
         brew tap --repair
     fi
+    [[ -s "$NVM_DIR/nvm.sh" ]] && nvm cache clear
+    if [ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+        sdk flush broadcast
+        sdk flush archives
+        sdk flush temp
+    fi
 }
 
 function update() {
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         sudo apt update
         sudo apt --with-new-pkgs upgrade -y
+        sudo snap refresh
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         sudo softwareupdate -i -a
         brew update
         brew upgrade
     fi
+    [[ -s npm ]] && npm update -g
+    [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && sdk selfupdate && sdk update
+    [[ -s "$BASH_IT/bash_it.sh" ]] && bash-it update
 }
 
 function checkport() {
@@ -167,8 +177,8 @@ export SDKMAN_DIR="$HOME/.sdkman"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Bash-it
 export BASH_IT="$HOME/.bash_it"
