@@ -163,7 +163,7 @@ export PATH="/usr/local/sbin:/$HOME/bin:/$HOME/.local/bin:$PATH"
 
 # sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -173,4 +173,4 @@ export NVM_DIR="$HOME/.nvm"
 # Bash-it
 export BASH_IT="$HOME/.bash_it"
 export BASH_IT_THEME='robbyrussell'
-source "$BASH_IT"/bash_it.sh
+[[ -s "$BASH_IT/bash_it.sh" ]] && source "$BASH_IT"/bash_it.sh

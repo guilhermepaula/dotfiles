@@ -6,16 +6,17 @@
 
 DIR=$( cd "$(dirname "$0")" ; pwd -P )
 FILES="Java Grails Gradle Node"
-GLOBAL_FILES="Eclipse JetBrains macOS Vim VisualStudioCode SublimeText"
+GLOBAL_FILES="JetBrains macOS Vim VisualStudioCode"
 
 mkdir -p $DIR/gitignore
-echo "getting configurations from github..."
 
 for FILE in $FILES; do
+    echo "getting $FILE from github"
     curl --silent https://raw.githubusercontent.com/github/gitignore/master/$FILE.gitignore > $DIR/gitignore/$FILE.gitignore
 done
 
 for FILE in $GLOBAL_FILES; do
+    echo "getting $FILE from github"
     curl --silent https://raw.githubusercontent.com/github/gitignore/master/Global/$FILE.gitignore > $DIR/gitignore/$FILE.gitignore
 done
 
