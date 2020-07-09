@@ -4,7 +4,10 @@
 # This script creates symlinks from the home directory to any desired dotfiles in ~/dotfiles
 ############################
 
-DIR=$( cd "$(dirname "$0")" ; pwd -P )
+DIR=$(
+    cd "$(dirname "$0")"
+    pwd -P
+)
 OLD_SUFFIX="_old"
 OLD_DIR="$DIR$OLD_SUFFIX"
 FILES="bashrc bash_profile vimrc vim zshrc"

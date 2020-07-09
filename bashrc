@@ -20,10 +20,10 @@ alias list-apt="comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/in
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     alias emptytrash="rm -rfv ~/.local/share/Trash/*"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-#Empty the Trash on all mounted volumes and the main HDD.
+    #Empty the Trash on all mounted volumes and the main HDD.
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
-    
-    alias free="$(( $(vm_stat | awk '/free/ {gsub(/\./, "", $3); print $3}') * 4096 / 1048576)) MiB free"
+
+    alias free="$(($(vm_stat | awk '/free/ {gsub(/\./, "", $3); print $3}') * 4096 / 1048576)) MiB free"
 
     #Open Chrome
     alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
@@ -69,7 +69,7 @@ function update() {
         brew update
         brew upgrade
     fi
-    [[ -s npm ]] && npm update -g
+    [ -x "$(command -v npm)" ] && npm update -g
     [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && sdk selfupdate && sdk update
     [[ -s "$BASH_IT/bash_it.sh" ]] && bash-it update
 }
@@ -83,8 +83,8 @@ function checkport() {
         if [ -n "$pairs" ]; then
             printf "$format_string" "PORT" "PID" "COMMAND"
             for pair in $pairs; do
-                port="${pair/#*:}"
-                proc="${pair/%:*}"
+                port="${pair/#*:/}"
+                proc="${pair/%:*/}"
                 cmnd="$(ps -p "$proc" -o command=)"
                 printf "$format_string" "$port" "$proc" "${cmnd:0:$COLUMNS-12}"
             done
@@ -114,7 +114,7 @@ function killport() {
 }
 
 function checksys() {
-    echo "> Internet: $(ping -c 1 google.com &> /dev/null && echo -e "Connected" || echo -e "Disconnected")"
+    echo "> Internet: $(ping -c 1 google.com &>/dev/null && echo -e "Connected" || echo -e "Disconnected")"
     echo "> IP: $(myip)"
     echo "> Local IP: $(localip)"
     echo "> Uptime: $(uptime | awk '{print $3,$4,$5}' | sed 's/.$//')"
@@ -136,21 +136,21 @@ function checksys() {
         to_byte=4096
         byte_to_megabyte=1048576
 
-        pfree=$(( pfree * to_byte / byte_to_megabyte ))
-        pwired=$(( pwired * to_byte / byte_to_megabyte ))
-        pinact=$(( pinact * to_byte / byte_to_megabyte ))
-        panon=$(( panon * to_byte / byte_to_megabyte ))
-        pcomp=$(( pcomp * to_byte / byte_to_megabyte ))
-        ppurge=$(( ppurge * to_byte / byte_to_megabyte ))
-        pfback=$(( pfback * to_byte / byte_to_megabyte ))
+        pfree=$((pfree * to_byte / byte_to_megabyte))
+        pwired=$((pwired * to_byte / byte_to_megabyte))
+        pinact=$((pinact * to_byte / byte_to_megabyte))
+        panon=$((panon * to_byte / byte_to_megabyte))
+        pcomp=$((pcomp * to_byte / byte_to_megabyte))
+        ppurge=$((ppurge * to_byte / byte_to_megabyte))
+        pfback=$((pfback * to_byte / byte_to_megabyte))
 
-        free=$(( pfree + pinact ))
-        cached=$(( pfback + ppurge ))
-        appmem=$(( panon - ppurge ))
-        used=$(( appmem + pwired + pcomp ))
+        free=$((pfree + pinact))
+        cached=$((pfback + ppurge))
+        appmem=$((panon - ppurge))
+        used=$((appmem + pwired + pcomp))
 
-        total_mem=$(( $(sysctl -n hw.memsize) / byte_to_megabyte ))
-        total_percent=$(( used * 100 / total_mem ))
+        total_mem=$(($(sysctl -n hw.memsize) / byte_to_megabyte))
+        total_percent=$((used * 100 / total_mem))
 
         printf "> RAM Usage: %.0f/%.0fMB (%.0f%s)\n" $used $total_mem $total_percent "%"
         echo "> SWAP Usage: $(sysctl -n -o vm.swapusage | awk '{ if( $3+0 != 0 )  printf( "%.0f/%.0fMB (%.0f%s)\n", ($6+0), ($3+0), ($6+0)*100/($3+0), "%" ); }')"
@@ -159,12 +159,12 @@ function checksys() {
     echo "> Disk Usage: $(df -Hl / | sed -e /Filesystem/d | awk '{print $1 " " $3 "/" $2 " (" $5 ")"}')"
 }
 
-function encode64(){
+function encode64() {
     echo -n "$1" | base64
     echo ""
 }
 
-function decode64(){
+function decode64() {
     echo -n "$1" | base64 --decode
     echo ""
 }
