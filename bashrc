@@ -71,7 +71,7 @@ function update() {
     fi
     [ -x "$(command -v npm)" ] && npm update -g
     [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && sdk selfupdate && sdk update
-    [[ -s "$BASH_IT/bash_it.sh" ]] && bash-it update
+    [[ -s "$BASH_IT/bash_it.sh" ]] && bash-it update stable --silent
 }
 
 function checkport() {
