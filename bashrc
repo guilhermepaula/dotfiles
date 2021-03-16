@@ -9,7 +9,7 @@ alias myip="curl -s ifconfig.me | cut -d ' ' -f 5"
 alias localip="hostname -I | cut -d ' ' -f 1"
 
 #Utilities
-alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python"
+alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3"
 
 #npm: list globally-installed packages
 alias list-npm="npm list -g --depth=0"
@@ -46,6 +46,7 @@ function clean() {
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         sudo apt autoremove --purge
         sudo apt autoclean
+        sudo apt purge $(dpkg -l | grep '^rc' | awk '{print $2}')
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         brew cleanup --force -s
         rm -rfv /Library/Caches/Homebrew/*
@@ -122,7 +123,7 @@ function checksys() {
         echo "> OS: $(lsb_release --description | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}') @ $(uname -mr)"
         echo "> RAM Usage: $(free -m | awk 'NR==2{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2}')"
         echo "> SWAP Usage: $(free -m | awk 'NR==3{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2}')"
-        echo "> CPU Load: $(top -bn1 | grep load | awk '{printf "%.2f\n", $(NF-2)}')"
+        echo "> CPU Usage: $(top -n 1 -b | awk '/^%Cpu/{print $2}')%"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo "> OS: $(sw_vers -productName) $(sw_vers -productVersion)"
         pfree=$(vm_stat | sed -n 2p | awk '{print $3}' | sed 's/.$//')
