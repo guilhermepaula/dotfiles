@@ -71,6 +71,7 @@ function update() {
         brew upgrade
     fi
     [ -x "$(command -v npm)" ] && npm update -g
+    [ -x "$(command -v yarn)" ] && yarn global upgrade
     [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && sdk selfupdate && sdk update
     [[ -s "$BASH_IT/bash_it.sh" ]] && bash-it update stable --silent
 }
@@ -185,3 +186,6 @@ export NVM_DIR="$HOME/.nvm"
 export BASH_IT="$HOME/.bash_it"
 export BASH_IT_THEME='robbyrussell'
 [[ -s "$BASH_IT/bash_it.sh" ]] && source "$BASH_IT"/bash_it.sh
+
+# yarn
+export PATH="$(yarn global bin):$PATH"
