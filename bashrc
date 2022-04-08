@@ -14,11 +14,15 @@ alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/
 #npm: list globally-installed packages
 alias list-npm="npm list -g --depth=0"
 
+#yarn: list globally-installed packages
+alias list-yarn="yarn global list"
+
 #apt: list manually installed packages
 alias list-apt="comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u)"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     alias emptytrash="rm -rfv ~/.local/share/Trash/*"
+    alias chrome-insecure="google-chrome --unsafely-treat-insecure-origin-as-secure=$1"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     #Empty the Trash on all mounted volumes and the main HDD.
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
@@ -171,7 +175,7 @@ function decode64() {
     echo ""
 }
 
-export PATH="/usr/local/sbin:/$HOME/bin:/$HOME/.local/bin:$PATH"
+export PATH="/usr/local/sbin:$HOME/bin:$HOME/.local/bin:$PATH"
 
 # sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
@@ -189,3 +193,5 @@ export BASH_IT_THEME='robbyrussell'
 
 # yarn
 export PATH="$(yarn global bin):$PATH"
+
+export REACT_EDITOR=code
