@@ -1,12 +1,7 @@
-#############################################
-# .bashrc                                   #
-# http://github.com/guilhermepaula/dotfiles #
-#############################################
 alias reload="exec $SHELL -l"
 
 #IP
 alias myip="curl -s ifconfig.me | cut -d ' ' -f 5"
-alias localip="hostname -I | cut -d ' ' -f 1"
 
 #Utilities
 alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3"
@@ -17,16 +12,18 @@ alias list-npm="npm list -g --depth=0"
 #yarn: list globally-installed packages
 alias list-yarn="yarn global list"
 
-#apt: list manually installed packages
-alias list-apt="comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u)"
-
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     alias emptytrash="rm -rfv ~/.local/share/Trash/*"
     alias chrome-insecure="google-chrome --unsafely-treat-insecure-origin-as-secure=$1"
+    alias localip="hostname -I | cut -d ' ' -f 1"
+
+    #apt: list manually installed packages
+    alias list-apt="comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u)"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     #Empty the Trash on all mounted volumes and the main HDD.
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
 
+    alias localip="ipconfig getifaddr en0"
     alias free="$(($(vm_stat | awk '/free/ {gsub(/\./, "", $3); print $3}') * 4096 / 1048576)) MiB free"
 
     #Open Chrome
@@ -174,24 +171,5 @@ function decode64() {
     echo -n "$1" | base64 --decode
     echo ""
 }
-
-export PATH="/usr/local/sbin:$HOME/bin:$HOME/.local/bin:$PATH"
-
-# sdkman
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
-
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-# Bash-it
-export BASH_IT="$HOME/.bash_it"
-export BASH_IT_THEME='robbyrussell'
-[[ -s "$BASH_IT/bash_it.sh" ]] && source "$BASH_IT"/bash_it.sh
-
-# yarn
-export PATH="$(yarn global bin):$PATH"
 
 export REACT_EDITOR=code

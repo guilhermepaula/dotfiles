@@ -1,8 +1,4 @@
 #!/bin/bash
-############################
-# install_gitignore.sh
-# this script calls all files needed to install.
-############################
 
 DIR=$(
     cd "$(dirname "$0")"
