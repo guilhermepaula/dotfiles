@@ -49,8 +49,7 @@ function clean() {
         sudo apt autoclean
         sudo apt purge $(dpkg -l | grep '^rc' | awk '{print $2}')
     elif [[ "$OSTYPE" == "darwin"* ]]; then
-        brew cleanup --force -s
-        rm -rfv /Library/Caches/Homebrew/*
+        brew cleanup -q --prune 9
         brew tap --repair
     fi
     [[ -s "$NVM_DIR/nvm.sh" ]] && nvm cache clear
