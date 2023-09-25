@@ -66,7 +66,7 @@ function update() {
         sudo apt --with-new-pkgs upgrade -y
         sudo snap refresh
     elif [[ "$OSTYPE" == "darwin"* ]]; then
-        sudo softwareupdate -i -a
+        sudo softwareupdate -i -a --agree-to-license
         brew update
         brew upgrade
     fi
