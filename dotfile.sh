@@ -9,9 +9,6 @@ alias speedtest="curl -sL https://raw.githubusercontent.com/sivel/speedtest-cli/
 #npm: list globally-installed packages
 alias list-npm="npm list -g --depth=0"
 
-#yarn: list globally-installed packages
-alias list-yarn="yarn global list"
-
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     alias emptytrash="rm -rfv ~/.local/share/Trash/*"
     alias chrome-insecure="google-chrome --unsafely-treat-insecure-origin-as-secure=$1"
@@ -22,6 +19,8 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     #Empty the Trash on all mounted volumes and the main HDD.
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
+    alias emptycache="sudo rm -rf /Library/Caches/*; rm -rf ~/Library/Caches/*/;"
+    alias emptylogs="sudo rm -rf /Library/Logs/*; rm -rf ~/Library/Logs/*;"
 
     alias localip="ipconfig getifaddr en0"
     alias free="$(($(vm_stat | awk '/free/ {gsub(/\./, "", $3); print $3}') * 4096 / 1048576)) MiB free"
@@ -71,7 +70,6 @@ function update() {
         brew upgrade
     fi
     [ -x "$(command -v npm)" ] && npm update -g
-    [ -x "$(command -v yarn)" ] && yarn global upgrade
     [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && sdk selfupdate && sdk update
     [[ -s "$BASH_IT/bash_it.sh" ]] && bash-it update stable --silent
 }
